@@ -107,7 +107,7 @@ public:
 	 * @brief reset Clears object state.
 	 * @return object reference
 	 */
-	void reset();
+	Encoder& reset();
 
 	/**
 	 * @brief encode Encodes data chunk to Base64.

@@ -284,11 +284,12 @@ Encoder::operator bool() const
 	return status_;
 }
 
-void Encoder::reset()
+Encoder& Encoder::reset()
 {
 	status_ = true;
 	encoded_bytes_ = 0;
 	n_ = 0;
+	return *this;
 }
 
 std::string Encoder::encode( const char *data, unsigned size )

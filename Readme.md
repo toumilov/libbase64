@@ -55,4 +55,109 @@ Or, for Cmake "_cmake --build . --target install_".
 To remove shared library and header files, run "_make uninstall_".
 
 ## Examples
-For library usage examples, refer to **test** folder.
+### Headers
+Library API is defined in _base64_ namespace.
+```
+#include <base64.hpp>
+```
+### Base64 validation
+Base64 validation functions are available for std::string and C strings:
+```
+std::string b64_str( "VGVzdCBzdHJpbmc=" );
+if ( base64::validate( b64 ) )
+{
+    // validation successful
+}
+const char *b64 = "VGVzdCBzdHJpbmc=";
+if ( base64::validate( b64, strlen( b64 ) ) )
+{
+    // validation successful
+}
+```
+### Data encoding
+Calculating base64 encoding output size for _n_ bytes:
+```
+unsigned b64_characters = base64::encoded_size( n );
+```
+Raw binary data encoding:
+```
+std::string b64 = base64::encode( data, size );
+```
+Hex data encoding (size should be even):
+```
+std::string b64 = base64::encode_hex( data, size );
+if ( b64.empty() )
+{
+    // failed to encode
+}
+```
+Encoding data stream (in chunks):
+```
+base64::Encoder e;
+auto encoded = e.encode( chunk1.c_str(), chunk1.size() ) ); // Encode data portion
+if ( e )
+{
+    // ecnoding successful
+}
+encoded += e.encode( chunk2.c_str(), chunk2.size() ) );     // Encode some more data
+encoded += e.encode_hex( chunk3.c_str(), chunk3.size() ) ); // Encode data in hex
+encoded += e.finalize(); // get trailing characters
+e.reset(); // cleanup encoder to prepare for another encoding round
+```
+### Data decoding
+Calculating buffer size (in bytes) required for decoded base64 data:
+```
+unsigned b64_characters = base64::decoded_size( "VGVzdCBzdHJpbmc=" );
+```
+Base64 std::string decoding to binary
+```
+std::vector<char> bytes = base64::decode( "VGVzdCBzdHJpbmc=" );
+if ( bytes.empty() )
+{
+    // decoding failed
+}
+```
+Base64 C string decoding to binary
+```
+const char *b64 = "VGVzdCBzdHJpbmc=";
+std::vector<char> bytes = base64::decode( b64, strlen( b64 ) );
+if ( bytes.empty() )
+{
+    // decoding failed
+}
+```
+Base64 std::string decoding to hex string
+```
+std::vector<char> bytes = base64::decode_hex( "VGVzdCBzdHJpbmc=" );
+if ( bytes.empty() )
+{
+    // decoding failed
+}
+```
+Base64 C string decoding to hex string
+```
+const char *b64 = "VGVzdCBzdHJpbmc=";
+std::vector<char> bytes = base64::decode_hex( b64, strlen( b64 ) );
+if ( bytes.empty() )
+{
+    // decoding failed
+}
+```
+Decoding data stream (in chunks):
+```
+base64::Decoder d;
+std::vector<char> out;
+do
+{
+    // decode binary chunk
+    d.decode( chunk, chunk.size(), out );
+    // or, decode chunk to hex string
+    d.decode_hex( chunk, chunk.size(), out );
+} while( d && !d.done() );
+if ( !d )
+{
+    // decoding failed
+}
+d.reset(); // reset decoder state
+```
+
