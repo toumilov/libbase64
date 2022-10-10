@@ -5,7 +5,8 @@ INSTALL_LIB_DIR := /usr/local/lib/
 SHARED_LIB := libbase64.so
 STATIC_LIB := libbase64.a
 OBJ_FILE := base64.o
-CC = g++
+CC = gcc
+CXX = g++
 AR = ar
 
 .PHONY: all static shared install uninstall test clean
@@ -16,7 +17,7 @@ static: $(OBJ_FILE)
 	$(AR) rcs $(STATIC_LIB) $^
 
 shared: $(OBJ_FILE)
-	$(CC) $^ -shared -o $(SHARED_LIB)
+	$(CXX) $^ -shared -o $(SHARED_LIB)
 
 install: shared
 	@echo Copying headers
@@ -33,8 +34,8 @@ uninstall:
 # requires cpputest
 # apt install cpputest
 test: static $(CURRENT_DIR)test/tests.cpp
-	$(CC) -I $(CURRENT_DIR)inc -c $(CURRENT_DIR)test/tests.cpp
-	$(CC) tests.o -L $(CURRENT_DIR) -l:$(STATIC_LIB) -lCppUTest -lCppUTestExt -o unittests
+	$(CXX) -I $(CURRENT_DIR)inc -g -c $(CURRENT_DIR)test/tests.cpp
+	$(CXX) tests.o -g -L $(CURRENT_DIR) -l:$(STATIC_LIB) -lCppUTest -lCppUTestExt -o unittests
 	@echo Running tests...
 	@exec $(CURRENT_DIR)unittests -v
 
@@ -46,4 +47,4 @@ clean:
 	rm -rf $(CURRENT_DIR)unittests
 
 base64.o: $(CURRENT_DIR)src/base64.cpp
-	$(CC) -I $(CURRENT_DIR)inc -c -o $@ $<
+	$(CXX) -I $(CURRENT_DIR)inc -fPIC -g -c -o $@ $<

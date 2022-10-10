@@ -152,7 +152,10 @@ static std::string encode_( const char *data, unsigned size, unsigned n, bool (*
 	if ( size )
 	{
 		char leftover[n] = {0};
-		size *= 2;
+		if ( !( n % 2 ) )
+		{
+			size *= 2;
+		}
 		for( unsigned i = 0; size > 0; size--, i++, p++ )
 		{
 			leftover[i] = *p;

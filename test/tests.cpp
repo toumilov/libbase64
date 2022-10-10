@@ -34,8 +34,13 @@ TEST_GROUP(Base64Group)
 
 TEST(Base64Group, Encode)
 {
-	std::string input( "Test string" );
+	std::string input( "\x12\x34\x56\x55" );
 	auto b64 = encode( input.c_str(), input.length() );
+	STRCMP_EQUAL( "EjRWVQ==", b64.c_str() );
+	CHECK( encoded_size( input.size() ) == b64.size() );
+
+	input = "Test string";
+	b64 = encode( input.c_str(), input.length() );
 	STRCMP_EQUAL( "VGVzdCBzdHJpbmc=", b64.c_str() );
 	CHECK( encoded_size( input.size() ) == b64.size() );
 
@@ -57,8 +62,13 @@ TEST(Base64Group, Encode)
 
 TEST(Base64Group, EncodeHex)
 {
-	std::string input( "5465737420737472696e67" ); // Test string
+	std::string input( "12345655" );
 	auto b64 = encode_hex( input.c_str(), input.length() );
+	STRCMP_EQUAL( "EjRWVQ==", b64.c_str() );
+	CHECK( encoded_size( input.size() / 2 ) == b64.size() );
+
+	input = "5465737420737472696e67"; // Test string
+	b64 = encode_hex( input.c_str(), input.length() );
 	STRCMP_EQUAL( "VGVzdCBzdHJpbmc=", b64.c_str() );
 	CHECK( encoded_size( input.size() / 2 ) == b64.size() );
 
