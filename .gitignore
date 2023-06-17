@@ -2,6 +2,6 @@
 .project
 *.o
 *.a
-*.so
+*.so*
 /build/
 unittests
